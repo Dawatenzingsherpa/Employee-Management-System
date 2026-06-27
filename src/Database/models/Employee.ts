@@ -5,6 +5,7 @@ import {
   Model,
   DataType,
   PrimaryKey,
+  AllowNull,
   
 } from 'sequelize-typescript'
 
@@ -22,4 +23,51 @@ class Employee extends Model{
   })
   declare id : string
 
+  @Column({
+    type : DataType.STRING,
+    allowNull : false
+  })
+  declare firstName : string
+
+
+
+  @Column({
+    type : DataType.STRING,
+    allowNull : false
+  })
+  declare lastName : string
+
+  @Column({
+    type : DataType.STRING,
+    allowNull : false
+  })
+  declare email: string
+
+  @Column({
+    type : DataType.INTEGER,
+    validate : {
+      len : {
+        args : [10,10],
+        msg : "phone number should be 10 digits"
+      }
+    },
+    allowNull : false
+  })
+  declare phoneNumber : string
+
+  @Column({
+    type : DataType.STRING,
+    allowNull : false
+  })
+  declare hireDate : string
+
+  
+  @Column({
+    type : DataType.INTEGER,
+    allowNull : false
+  })
+  declare salary : string
+
 }
+
+export default Employee

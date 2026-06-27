@@ -8,7 +8,7 @@ const sequelize = new sequelize_typescript_1.Sequelize({
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
-    models: ['_dirname' + "/models"]
+    models: [__dirname + "/models"]
 });
 sequelize.authenticate()
     .then(() => {
@@ -16,7 +16,7 @@ sequelize.authenticate()
 }).catch((error) => {
     console.log(error);
 });
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ force: false }).then(() => {
     console.log("Synced");
 });
 exports.default = sequelize;

@@ -36,15 +36,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const PORT = 3000;
-const dotenv = __importStar(require("dotenv"));
-dotenv.config();
+app.use(express_1.default.json());
 require("./Database/connection");
-app.get("/", (req, res) => {
-    res.send("hello world");
-});
+const EmployeeRoute_1 = __importDefault(require("./Routes/EmployeeRoute"));
+// app.get("/",(req,res)=>{
+//   res.send("hello world");
+// })
+app.use("/", EmployeeRoute_1.default);
 app.listen(PORT, () => {
     console.log("server has started at", PORT);
 });
