@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import Department from "./models/Department";
 import Employee from "./models/Employee";
+import Attendence from "./models/Attendence";
 
 const sequelize = new Sequelize({
   database : process.env.DB_NAME!,
@@ -28,6 +29,9 @@ sequelize.sync({alter : false}).then(()=>{
 //relationship
 Department.hasMany(Employee,{foreignKey : "departmentId"});
 Employee.belongsTo(Department,{foreignKey:"departmentId"})
+
+Employee.hasMany(Attendence,{foreignKey:"employeeId"});
+Attendence.belongsTo(Employee,{foreignKey : "employeeId"})
 
 
 export default sequelize

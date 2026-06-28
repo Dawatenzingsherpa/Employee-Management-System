@@ -11,9 +11,12 @@ const PORT : number = 3000;
 app.use(express.json())
 
 import './Database/connection';
+import DepartmentController from "./Controller/DepartmentController";
+
 import employeeRoute from "./Routes/EmployeeRoute"
 import departmentRoute from "./Routes/DepartmentRoute"
-import DepartmentController from "./Controller/DepartmentController";
+import attendenceRoute from "./Routes/AttendenceRoute"
+
 
 // app.get("/",(req,res)=>{
 //   res.send("hello world");
@@ -21,6 +24,7 @@ import DepartmentController from "./Controller/DepartmentController";
 
 app.use("/employee",employeeRoute)
 app.use("/department",departmentRoute)
+app.use("/attendence",attendenceRoute)
 
 
 app.listen(PORT,()=>{
