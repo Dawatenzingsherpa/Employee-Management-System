@@ -1,12 +1,13 @@
 import Employee from "../Database/models/Employee";
 import { Request,Response } from "express";
 import { EmployeeData } from "../types/employeeTypes";
+import Department from "../Database/models/Department";
 class EmployeeController{
   public static async addEmployee(req:Request,res:Response):Promise<void>{
     try{
-      const {firstName,lastName,email,phoneNumber,hireDate,salary}:EmployeeData = req.body
+      const {firstName,lastName,email,phoneNumber,hireDate,salary,departmentId}:EmployeeData = req.body
 
-    if(!firstName || !lastName || !email || !phoneNumber || !hireDate || !salary){
+    if(!firstName || !lastName || !email || !phoneNumber || !hireDate || !salary ||!departmentId){
       res.status(400).json({
         message : "please provide firstName,lastName,email,phoneNumber,hireDate,salary"
       })
@@ -19,7 +20,8 @@ class EmployeeController{
       email,
       phoneNumber,
       hireDate,
-      salary
+      salary,
+      departmentId
     })
 
     res.status(201).json({
@@ -37,7 +39,12 @@ class EmployeeController{
 
 
   public static async fetchEmployee(req:Request,res:Response):Promise<void>{
-    const data = await Employee.findAll();
+    const data = await Employee.findAll({
+      include: {
+        model : Department,
+        attributes : ['id','departmentName']
+      }
+    });
     
 
     if(data.length===0){
@@ -58,6 +65,9 @@ class EmployeeController{
     const [data] = await Employee.findAll({
       where : {
         id 
+      },include : {
+        model : Department,
+        attributes : ['id','departmentName']
       }
     });
     

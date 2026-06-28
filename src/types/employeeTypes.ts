@@ -4,5 +4,6 @@ export interface EmployeeData {
   email : string,
   phoneNumber : number,
   hireDate : string | Date,
-  salary : string
+  salary : string,
+  departmentId : string
 }
