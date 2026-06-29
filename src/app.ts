@@ -16,6 +16,7 @@ import DepartmentController from "./Controller/DepartmentController";
 import employeeRoute from "./Routes/EmployeeRoute"
 import departmentRoute from "./Routes/DepartmentRoute"
 import attendenceRoute from "./Routes/AttendenceRoute"
+import leaveRequestRoute from "./Routes/LeaveRequestRoute";
 
 
 // app.get("/",(req,res)=>{
@@ -25,6 +26,7 @@ import attendenceRoute from "./Routes/AttendenceRoute"
 app.use("/employee",employeeRoute)
 app.use("/department",departmentRoute)
 app.use("/attendence",attendenceRoute)
+app.use("/leaveRequest",leaveRequestRoute)
 
 
 app.listen(PORT,()=>{

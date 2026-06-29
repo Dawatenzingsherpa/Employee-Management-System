@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize-typescript";
 import Department from "./models/Department";
 import Employee from "./models/Employee";
 import Attendence from "./models/Attendence";
+import LeaveRequest from "./models/LeaveRequest";
 
 const sequelize = new Sequelize({
   database : process.env.DB_NAME!,
@@ -32,6 +33,11 @@ Employee.belongsTo(Department,{foreignKey:"departmentId"})
 
 Employee.hasMany(Attendence,{foreignKey:"employeeId"});
 Attendence.belongsTo(Employee,{foreignKey : "employeeId"})
+
+
+Employee.hasMany(LeaveRequest,{foreignKey:"employeeId"});
+LeaveRequest.belongsTo(Employee,{foreignKey : "employeeId"})
+
 
 
 export default sequelize
