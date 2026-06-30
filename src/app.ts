@@ -17,6 +17,7 @@ import employeeRoute from "./Routes/EmployeeRoute"
 import departmentRoute from "./Routes/DepartmentRoute"
 import attendenceRoute from "./Routes/AttendenceRoute"
 import leaveRequestRoute from "./Routes/LeaveRequestRoute";
+import userRoute from "./Routes/UserRoute"
 
 
 // app.get("/",(req,res)=>{
@@ -27,7 +28,7 @@ app.use("/employee",employeeRoute)
 app.use("/department",departmentRoute)
 app.use("/attendence",attendenceRoute)
 app.use("/leaveRequest",leaveRequestRoute)
-
+app.use("/user",userRoute)
 
 app.listen(PORT,()=>{
   DepartmentController.departmentSeeder();
