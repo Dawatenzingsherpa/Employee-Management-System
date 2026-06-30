@@ -1,12 +1,12 @@
 import User from "../Database/models/User";
 import bcrypt from "bcrypt"
 import jwt from 'jsonwebtoken'
-import { Request,Response } from "express";
+import { Request,Response } from "express"; 
 import { RegistrationData } from "../types/UserTypes";
 
 class UserController{
   async registerUser(req:Request,res:Response):Promise<void>{
-    const {email,password,role}:RegistrationData= req.body
+    const {username,email,password,role}:RegistrationData= req.body
 
     if(!email||!password||!role){
       res.status(404).json({
@@ -16,6 +16,7 @@ class UserController{
     }
 
     const data = await User.create({
+      username,
       email,
       password: bcrypt.hashSync(password,8),
       role
@@ -67,9 +68,6 @@ class UserController{
         data : token
       })
     }
-    
-
-    
   }
 }
 

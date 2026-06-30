@@ -20,6 +20,11 @@ class User extends Model {
   })
   declare id : string
 
+   @Column({
+    type : DataType.STRING
+  })
+  declare username : string
+
   @Column({
     type : DataType.STRING
   })

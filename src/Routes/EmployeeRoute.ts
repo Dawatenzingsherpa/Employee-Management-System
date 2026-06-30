@@ -1,18 +1,19 @@
 import express,{Router} from 'express'
 import EmployeeController from '../Controller/EmployeeController';
-
+import AuthMiddleware from '../Middleware/AuthMiddleware';
+import { Role } from '../types/UserTypes';
 
 const router:Router = express.Router();
 
 
 
 router.route("/")
-.post(EmployeeController.addEmployee)
-.get(EmployeeController.fetchEmployee)
+.post(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),EmployeeController.addEmployee)
+.get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),EmployeeController.fetchEmployee)
 
 
 router.route("/:id")
-.get(EmployeeController.fetchSingleEmployee)
-.patch(EmployeeController.updateEmployee)
-.delete(EmployeeController.deleteEmployee)
+.get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),EmployeeController.fetchSingleEmployee)
+.patch(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),EmployeeController.updateEmployee)
+.delete(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),EmployeeController.deleteEmployee)
 export default router
