@@ -26,7 +26,7 @@ class AuthMiddleware{
       return
     }
 
-    jwt.verify(token,'hahaha', async (err,decoded:any)=>{
+    jwt.verify(token,process.env.SECRET_KEY as string, async (err,decoded:any)=>{
       if(err){
         res.status(404).json({
           message : "invalid token",

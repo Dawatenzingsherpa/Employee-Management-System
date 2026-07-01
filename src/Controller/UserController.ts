@@ -59,7 +59,7 @@ class UserController{
       })
       return
     }else{
-      const token = jwt.sign({id : data.id},"hahaha",{
+      const token = jwt.sign({id : data.id},process.env.SECRET_KEY as string,{
         expiresIn : "20d"
       })
 
