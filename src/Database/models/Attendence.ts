@@ -29,15 +29,21 @@ class Attendence extends Model {
 
   
   @Column({
-    type : DataType.STRING
+    type :  DataType.DATE
   })
-  declare checkIn:string
+  declare checkIn:Date
 
   
   @Column({
-    type : DataType.STRING
+    type :  DataType.DATE
   })
-  declare checkOut:string
+  declare checkOut: Date
+
+  @Column({
+    type : DataType.INTEGER
+
+  })
+  declare overtime : number
 
 
 }

@@ -60,7 +60,7 @@ class UserController{
       return
     }else{
       const token = jwt.sign({id : data.id},"hahaha",{
-        expiresIn : "1d"
+        expiresIn : "20d"
       })
 
       res.status(200).json({

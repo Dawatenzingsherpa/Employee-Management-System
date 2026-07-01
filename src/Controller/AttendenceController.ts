@@ -12,11 +12,8 @@ class AttendenceController{
       return
     }
     const date = new Date().toLocaleDateString()
-    const checkIn = new Date().toLocaleTimeString('en-Us',{
-      hour : "numeric",
-      minute : "2-digit",
-      hour12 : true
-    })
+    const checkIn = new Date()
+    
 
     const data = await Attendence.create({
       employeeId,
@@ -41,11 +38,10 @@ class AttendenceController{
       return
     }
 
-    data.checkOut = new Date().toLocaleTimeString('en-Us',{
-      hour : "numeric",
-      minute : "2-digit",
-      hour12 : true
-    })
+    data.checkOut = new Date()
+    const overtime = calculateOvertime(data)
+    data.overtime = overtime
+    
     data.save()
 
     res.status(200).json({
@@ -91,6 +87,18 @@ class AttendenceController{
       data
     })
   }
+}
+
+function calculateOvertime(data:any){
+  const checkIn = new Date(data.checkIn).getTime();
+  const checkOut = new Date().getTime();
+  const workedMinutes = (checkOut-checkIn)/(1000*60);
+  const workedHours = workedMinutes/60;
+
+  const requiredMinutes = 8 *60
+  const overtimeMinutes= Math.max(0,workedMinutes-requiredMinutes);
+  const overtimeHour = Number((overtimeMinutes/60).toFixed(2))
+  return overtimeHour
 }
 
 export default new AttendenceController()
