@@ -1,8 +1,9 @@
-import { Sequelize } from "sequelize-typescript";
+import { ForeignKey, Sequelize } from "sequelize-typescript";
 import Department from "./models/Department";
 import Employee from "./models/Employee";
 import Attendence from "./models/Attendence";
 import LeaveRequest from "./models/LeaveRequest";
+import Performance from "./models/Performance";
 
 const sequelize = new Sequelize({
   database : process.env.DB_NAME!,
@@ -37,6 +38,9 @@ Attendence.belongsTo(Employee,{foreignKey : "employeeId"})
 
 Employee.hasMany(LeaveRequest,{foreignKey:"employeeId"});
 LeaveRequest.belongsTo(Employee,{foreignKey : "employeeId"})
+
+Employee.hasMany(Performance,{foreignKey: "employeeId"});
+Performance.belongsTo(Employee,{foreignKey:"employeeId"})
 
 
 
