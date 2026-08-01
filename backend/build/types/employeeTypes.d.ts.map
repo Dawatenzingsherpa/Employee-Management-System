@@ -1,0 +1,1 @@
+{"version":3,"file":"employeeTypes.d.ts","sourceRoot":"","sources":["../../src/types/employeeTypes.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,YAAY;IAC3B,SAAS,EAAG,MAAM,CAAC;IACnB,QAAQ,EAAG,MAAM,CAAC;IAClB,KAAK,EAAG,MAAM,CAAC;IACf,WAAW,EAAG,MAAM,CAAC;IACrB,QAAQ,EAAG,MAAM,GAAG,IAAI,CAAC;IACzB,MAAM,EAAG,MAAM,CAAA;CAChB"}
