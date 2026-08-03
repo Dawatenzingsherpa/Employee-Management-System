@@ -12,12 +12,17 @@ import Buttons from "./pages/UiElements/Buttons";
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
-import BasicTables from "./pages/Tables/BasicTables";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import EmployeeTable from "./components/tables/BasicTables/EmployeeTable";
+import DepartmentTable from "./components/tables/BasicTables/DepartmentTable";
+import PerformanceTable from "./components/tables/BasicTables/PerformanceTable";
+import PayrollTable from "./components/tables/BasicTables/PayrollTable";
+import AttendenceTable from "./components/tables/BasicTables/AttendenceTable";
+import LeaveRequestTable from "./components/tables/BasicTables/LeaveRequest";
 
 export default function App() {
   return (
@@ -38,7 +43,15 @@ export default function App() {
             <Route path="/form-elements" element={<FormElements />} />
 
             {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
+            <Route path="/employee-tables" element={<EmployeeTable />} />
+            <Route path="/department-tables" element={<DepartmentTable />} />
+            <Route path="/performance-tables" element={<PerformanceTable />} />
+            <Route path="/payroll-tables" element={<PayrollTable />} />
+            <Route path="/attendence-tables" element={<AttendenceTable />} />
+            <Route
+              path="/leaveRequest-tables"
+              element={<LeaveRequestTable />}
+            />
 
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
