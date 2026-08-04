@@ -11,3 +11,7 @@ export interface Department {
   departments: DepartmentData[];
   status: Status;
 }
+
+export interface DepartmentInput {
+  departmentName: string;
+}

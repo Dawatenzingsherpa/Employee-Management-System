@@ -26,7 +26,7 @@ export const employeeField = [
   {
     name: "hireDate",
     label: "Hire Date",
-    type: "date",
+    type: "text",
   },
   {
     name: "salary",
@@ -37,8 +37,7 @@ export const employeeField = [
   {
     name: "departmentId",
     label: "Department",
-    type: "select",
-    options: ["23e7bde8-c1c3-4f5f-a6ea-3b3392e4556f"],
+    type: "text",
   },
 ];
 
@@ -86,7 +85,7 @@ export const performanceField = [
   {
     name: "employeeId",
     label: "Employee",
-    type: "select",
+    type: "text",
   },
 ];
 

@@ -3,7 +3,11 @@ import { APIAuthenticated } from "../http";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
 import { Status } from "../types/AuthTypes";
-import { PerformanceData, Performances } from "../types/PerformanceTyps";
+import {
+  PerformanceData,
+  PerformanceInput,
+  Performances,
+} from "../types/PerformanceTyps";
 
 const initialState: Performances = {
   performanceData: [],
@@ -35,11 +39,21 @@ const performanceSlice = createSlice({
         state.performanceData.splice(index, 1);
       }
     },
+    setAddPerformance(
+      state: Performances,
+      action: PayloadAction<PerformanceData>,
+    ) {
+      state.performanceData.push(action.payload);
+    },
   },
 });
 
-export const { setStatus, setPerformances, setDeletePerformance } =
-  performanceSlice.actions;
+export const {
+  setStatus,
+  setPerformances,
+  setDeletePerformance,
+  setAddPerformance,
+} = performanceSlice.actions;
 export default performanceSlice.reducer;
 
 export function fetchPerformanceData() {
@@ -66,6 +80,24 @@ export function deletePerformance(id: string) {
       const response = await APIAuthenticated.delete("performance/" + id);
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function createPerformance(data: PerformanceInput) {
+  return async function createPerformanceThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.post("performance/", data);
+      console.log(response.data.data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setAddPerformance(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

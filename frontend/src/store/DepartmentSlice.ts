@@ -3,7 +3,11 @@ import { APIAuthenticated } from "../http";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
 import { Status } from "../types/AuthTypes";
-import { Department, DepartmentData } from "../types/DepartmentTypes";
+import {
+  Department,
+  DepartmentData,
+  DepartmentInput,
+} from "../types/DepartmentTypes";
 
 const initialState: Department = {
   departments: [],
@@ -27,17 +31,23 @@ const departmentSlice = createSlice({
       const index = state.departments.findIndex(
         (employee) => employee.id === action.payload,
       );
-      console.log(index);
 
       if (index != -1) {
         state.departments.splice(index, 1);
       }
     },
+    setAddDepartment(state: Department, action: PayloadAction<DepartmentData>) {
+      state.departments.push(action.payload);
+    },
   },
 });
 
-export const { setStatus, setDepartments, setDeleteDepartment } =
-  departmentSlice.actions;
+export const {
+  setStatus,
+  setDepartments,
+  setDeleteDepartment,
+  setAddDepartment,
+} = departmentSlice.actions;
 export default departmentSlice.reducer;
 
 export function fetchDepartmentData() {
@@ -64,6 +74,23 @@ export function deleteDepartment(id: string) {
       const response = await APIAuthenticated.delete("department/" + id);
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function createDepartment(data: DepartmentInput) {
+  return async function createDepartmentThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.post("department/", data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setAddDepartment(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

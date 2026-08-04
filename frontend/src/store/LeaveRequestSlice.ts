@@ -3,7 +3,11 @@ import { APIAuthenticated } from "../http";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
 import { Status } from "../types/AuthTypes";
-import { LeaveRequest, LeaveRequestData } from "../types/LeaveRequestTypes";
+import {
+  LeaveRequest,
+  LeaveRequestData,
+  LeaveRequestInput,
+} from "../types/LeaveRequestTypes";
 
 const initialState: LeaveRequest = {
   leaveRequestData: [],
@@ -35,11 +39,21 @@ const leaveRequestSlice = createSlice({
         state.leaveRequestData.splice(index, 1);
       }
     },
+    setAddLeaveRequest(
+      state: LeaveRequest,
+      action: PayloadAction<LeaveRequestData>,
+    ) {
+      state.leaveRequestData.push(action.payload);
+    },
   },
 });
 
-export const { setStatus, setLeaveRequests, setDeleteLeaveRequest } =
-  leaveRequestSlice.actions;
+export const {
+  setStatus,
+  setLeaveRequests,
+  setDeleteLeaveRequest,
+  setAddLeaveRequest,
+} = leaveRequestSlice.actions;
 export default leaveRequestSlice.reducer;
 
 export function fetchLeaveRequestData() {
@@ -66,6 +80,23 @@ export function deleteLeaveRequest(id: string) {
       const response = await APIAuthenticated.delete("leaveRequest/" + id);
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function createLeaveRequest(data: LeaveRequestInput) {
+  return async function createDepartmentThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.post("leaveRequest/", data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setAddLeaveRequest(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

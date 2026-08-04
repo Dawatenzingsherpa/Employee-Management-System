@@ -19,3 +19,14 @@ export interface Employee {
   employeeData: EmployeeData[];
   status: Status;
 }
+
+export interface EmployeeInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  hireDate: string;
+  salary: number;
+
+  departmentId: string;
+}

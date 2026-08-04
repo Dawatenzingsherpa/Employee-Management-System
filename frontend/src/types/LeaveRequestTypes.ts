@@ -16,3 +16,8 @@ export interface LeaveRequest {
   leaveRequestData: LeaveRequestData[];
   status: Status;
 }
+
+export interface LeaveRequestInput {
+  employeeId: string;
+  leaveDate: string;
+}

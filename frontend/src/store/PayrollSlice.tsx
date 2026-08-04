@@ -3,7 +3,7 @@ import { APIAuthenticated } from "../http";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
 import { Status } from "../types/AuthTypes";
-import { Payroll, PayrollData } from "../types/PayrollTypes";
+import { Payroll, PayrollData, PayrollInput } from "../types/PayrollTypes";
 
 const initialState: Payroll = {
   payrollData: [],
@@ -29,10 +29,13 @@ const payrollSlice = createSlice({
         state.payrollData.splice(index, 1);
       }
     },
+    setAddPayroll(state: Payroll, action: PayloadAction<PayrollData>) {
+      state.payrollData.push(action.payload);
+    },
   },
 });
 
-export const { setStatus, setPayrolls, setDeletePayroll } =
+export const { setStatus, setPayrolls, setDeletePayroll, setAddPayroll } =
   payrollSlice.actions;
 export default payrollSlice.reducer;
 
@@ -60,6 +63,24 @@ export function deletePayroll(id: string) {
       const response = await APIAuthenticated.delete("payroll/" + id);
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function createPayroll(data: PayrollInput) {
+  return async function createPerformanceThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.post("payroll/", data);
+      console.log(response.data.data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setAddPayroll(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

@@ -25,3 +25,11 @@ export interface Performances {
   performanceData: PerformanceData[];
   status: Status;
 }
+
+export interface PerformanceInput {
+  attendence: number;
+  quality: number;
+  productivity: number;
+  teamwork: number;
+  employeeId: string;
+}

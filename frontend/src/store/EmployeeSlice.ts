@@ -2,7 +2,7 @@ import { APIAuthenticated } from "../http";
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "./store";
-import { Employee, EmployeeData } from "../types/EmployeeTypes";
+import { Employee, EmployeeData, EmployeeInput } from "../types/EmployeeTypes";
 import { Status } from "../types/AuthTypes";
 
 const initialState: Employee = {
@@ -33,10 +33,13 @@ const employeeSlice = createSlice({
         state.employeeData.splice(index, 1);
       }
     },
+    setAddEmployee(state: Employee, action: PayloadAction<EmployeeData>) {
+      state.employeeData.push(action.payload);
+    },
   },
 });
 
-export const { setStatus, setEmployeeData, setDeleteEmployee } =
+export const { setStatus, setEmployeeData, setDeleteEmployee, setAddEmployee } =
   employeeSlice.actions;
 export default employeeSlice.reducer;
 
@@ -64,6 +67,23 @@ export function deleteEmployeeRecord(id: string) {
       const response = await APIAuthenticated.delete("employee/" + id);
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function createEmployee(data: EmployeeInput) {
+  return async function deleteEmployeeRecordThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.post("employee/", data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setAddEmployee(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

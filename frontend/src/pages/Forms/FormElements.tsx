@@ -10,42 +10,54 @@ import {
   performanceField,
 } from "./FormData";
 import { useState } from "react";
+import { useAppDispatch } from "../../store/hook";
+import { createEmployee } from "../../store/EmployeeSlice";
+import { EmployeeInput } from "../../types/EmployeeTypes";
+import { PerformanceInput } from "../../types/PerformanceTyps";
+import { createPerformance } from "../../store/PerformanceSlice";
+import { createPayroll } from "../../store/PayrollSlice";
+import { createDepartment } from "../../store/DepartmentSlice";
+import { createLeaveRequest } from "../../store/LeaveRequestSlice";
+import { DepartmentInput } from "../../types/DepartmentTypes";
+import { PayrollInput } from "../../types/PayrollTypes";
+import { LeaveRequestInput } from "../../types/LeaveRequestTypes";
 
 export default function FormElements() {
   type FormType = keyof typeof forms;
   const [SelectForm, setSelectForm] = useState<FormType>("employee");
+  const dispatch = useAppDispatch();
 
   const forms = {
     employee: {
       title: "Create Employee",
       fields: employeeField,
       submitText: "Save Employee",
-      onSubmit: () => console.log("employee"),
+      onSubmit: (data: EmployeeInput) => dispatch(createEmployee(data)),
     },
 
     department: {
       title: "Create Department",
       fields: departmentField,
       submitText: "Save Department",
-      onSubmit: () => console.log("departments"),
+      onSubmit: (data: DepartmentInput) => dispatch(createDepartment(data)),
     },
     payroll: {
       title: "Create Payroll",
       fields: payrollField,
       submitText: "create Payroll",
-      onSubmit: () => console.log("payroll"),
+      onSubmit: (data: PayrollInput) => dispatch(createPayroll(data)),
     },
     performance: {
       title: "Create Performance",
       fields: performanceField,
       submitText: "create Performance",
-      onSubmit: () => console.log("performance"),
+      onSubmit: (data: PerformanceInput) => dispatch(createPerformance(data)),
     },
     leaveRequest: {
       title: "Create Leave Request",
       fields: leaveRequestField,
       submitText: "create Leave Request",
-      onSubmit: () => console.log("leaveRequest"),
+      onSubmit: (data: LeaveRequestInput) => dispatch(createLeaveRequest(data)),
     },
   };
   return (

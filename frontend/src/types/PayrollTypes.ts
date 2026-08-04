@@ -19,3 +19,7 @@ export interface Payroll {
   payrollData: PayrollData[];
   status: Status;
 }
+
+export interface PayrollInput {
+  employeeId: string;
+}
