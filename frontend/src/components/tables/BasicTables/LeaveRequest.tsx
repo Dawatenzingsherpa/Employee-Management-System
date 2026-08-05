@@ -9,12 +9,18 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
 import { useEffect } from "react";
 
-import { fetchLeaveRequestData } from "../../../store/LeaveRequestSlice";
-import Badge from "../../ui/badge/Badge";
+import {
+  changeRequestStatus,
+  fetchLeaveRequestData,
+} from "../../../store/LeaveRequestSlice";
 
 export default function LeaveRequestTable() {
   const dispatch = useAppDispatch();
   const { leaveRequestData } = useAppSelector((state) => state.leaveRequest);
+
+  const handleStatusChange = (id: string, status: string) => {
+    dispatch(changeRequestStatus(status, id));
+  };
 
   useEffect(() => {
     dispatch(fetchLeaveRequestData());
@@ -70,18 +76,17 @@ export default function LeaveRequestTable() {
                   {new Date(leave?.leaveDate).toLocaleDateString()}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <Badge
-                    size="sm"
-                    color={
-                      leave?.requestStatus === "approved"
-                        ? "success"
-                        : leave?.requestStatus === "pending"
-                          ? "warning"
-                          : "error"
+                  <select
+                    value={leave?.requestStatus || ""}
+                    onChange={(e) =>
+                      handleStatusChange(leave.id, e.target.value)
                     }
+                    className="rounded-md border border-gray-300 px-3 py-1 text-sm"
                   >
-                    {leave?.requestStatus}
-                  </Badge>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
                 </TableCell>
               </TableRow>
             ))}

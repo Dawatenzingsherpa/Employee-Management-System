@@ -45,6 +45,18 @@ const leaveRequestSlice = createSlice({
     ) {
       state.leaveRequestData.push(action.payload);
     },
+    setChangeStatus(
+      state: LeaveRequest,
+      action: PayloadAction<LeaveRequestData>,
+    ) {
+      const index = state.leaveRequestData.findIndex(
+        (request) => request.id == action.payload.id,
+      );
+
+      if (index !== -1) {
+        state.leaveRequestData[index] = action.payload;
+      }
+    },
   },
 });
 
@@ -53,6 +65,7 @@ export const {
   setLeaveRequests,
   setDeleteLeaveRequest,
   setAddLeaveRequest,
+  setChangeStatus,
 } = leaveRequestSlice.actions;
 export default leaveRequestSlice.reducer;
 
@@ -97,6 +110,28 @@ export function createLeaveRequest(data: LeaveRequestInput) {
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setAddLeaveRequest(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function changeRequestStatus(requestStatus: string, id: string) {
+  return async function changeRequestStatusThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.patch(
+        `leaveRequest/requestStatus/${id}`,
+        {
+          requestStatus: requestStatus,
+        },
+      );
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setChangeStatus(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }
