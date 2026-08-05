@@ -18,6 +18,7 @@ export interface PayrollData {
 export interface Payroll {
   payrollData: PayrollData[];
   status: Status;
+  singlePayroll: PayrollData;
 }
 
 export interface PayrollInput {

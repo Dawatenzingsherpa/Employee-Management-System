@@ -8,6 +8,7 @@ import { Payroll, PayrollData, PayrollInput } from "../types/PayrollTypes";
 const initialState: Payroll = {
   payrollData: [],
   status: Status.LOADING,
+  singlePayroll: {} as PayrollData,
 };
 
 const payrollSlice = createSlice({
@@ -32,11 +33,19 @@ const payrollSlice = createSlice({
     setAddPayroll(state: Payroll, action: PayloadAction<PayrollData>) {
       state.payrollData.push(action.payload);
     },
+    setSinglePayroll(state: Payroll, action: PayloadAction<PayrollData>) {
+      state.singlePayroll = action.payload;
+    },
   },
 });
 
-export const { setStatus, setPayrolls, setDeletePayroll, setAddPayroll } =
-  payrollSlice.actions;
+export const {
+  setStatus,
+  setPayrolls,
+  setDeletePayroll,
+  setAddPayroll,
+  setSinglePayroll,
+} = payrollSlice.actions;
 export default payrollSlice.reducer;
 
 export function fetchPayrollData() {
@@ -81,6 +90,23 @@ export function createPayroll(data: PayrollInput) {
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setAddPayroll(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function updatePayroll(data: PayrollInput, id: string) {
+  return async function updatePayrollThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.patch(`payroll/${id}`, data);
+      console.log(response.data.data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

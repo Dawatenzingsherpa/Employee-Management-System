@@ -24,6 +24,7 @@ export enum Rating {
 export interface Performances {
   performanceData: PerformanceData[];
   status: Status;
+  singlePerformance: PerformanceData;
 }
 
 export interface PerformanceInput {

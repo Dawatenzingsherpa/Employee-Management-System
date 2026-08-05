@@ -8,6 +8,7 @@ import { Status } from "../types/AuthTypes";
 const initialState: Employee = {
   employeeData: [],
   status: Status.LOADING,
+  singleEmployee: {} as EmployeeData,
 };
 
 const employeeSlice = createSlice({
@@ -36,11 +37,19 @@ const employeeSlice = createSlice({
     setAddEmployee(state: Employee, action: PayloadAction<EmployeeData>) {
       state.employeeData.push(action.payload);
     },
+    setSingleEmployee(state: Employee, action: PayloadAction<EmployeeData>) {
+      state.singleEmployee = action.payload;
+    },
   },
 });
 
-export const { setStatus, setEmployeeData, setDeleteEmployee, setAddEmployee } =
-  employeeSlice.actions;
+export const {
+  setStatus,
+  setEmployeeData,
+  setDeleteEmployee,
+  setAddEmployee,
+  setSingleEmployee,
+} = employeeSlice.actions;
 export default employeeSlice.reducer;
 
 export function fetchEmployeeData() {
@@ -81,6 +90,23 @@ export function createEmployee(data: EmployeeInput) {
     dispatch(setStatus(Status.LOADING));
     try {
       const response = await APIAuthenticated.post("employee/", data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setAddEmployee(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function updateEmployee(data: EmployeeInput, id: string) {
+  return async function updateEmployeeThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.patch(`employee/${id}`, data);
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setAddEmployee(response.data.data));

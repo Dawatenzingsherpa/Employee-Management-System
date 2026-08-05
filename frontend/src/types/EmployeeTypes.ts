@@ -18,6 +18,7 @@ export interface EmployeeData {
 export interface Employee {
   employeeData: EmployeeData[];
   status: Status;
+  singleEmployee: EmployeeData;
 }
 
 export interface EmployeeInput {

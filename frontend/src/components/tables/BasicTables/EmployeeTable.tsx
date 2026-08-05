@@ -12,9 +12,12 @@ import {
   deleteEmployeeRecord,
   fetchEmployeeData,
   setDeleteEmployee,
+  setSingleEmployee,
 } from "../../../store/EmployeeSlice";
+import { useNavigate } from "react-router";
 
 export default function EmployeeTable() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { employeeData } = useAppSelector((state) => state.employee);
   const handleDelete = async (id: string) => {
@@ -99,6 +102,19 @@ export default function EmployeeTable() {
                   ${employee?.salary?.toLocaleString()}
                 </TableCell>
                 <TableCell>
+                  <button
+                    className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200"
+                    onClick={() => {
+                      dispatch(setSingleEmployee(employee));
+                      navigate("/edit-form", {
+                        state: {
+                          type: "employee",
+                        },
+                      });
+                    }}
+                  >
+                    Edit
+                  </button>
                   <button
                     className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200"
                     onClick={() => handleDelete(employee?.id)}

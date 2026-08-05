@@ -23,6 +23,7 @@ import PerformanceTable from "./components/tables/BasicTables/PerformanceTable";
 import PayrollTable from "./components/tables/BasicTables/PayrollTable";
 import AttendenceTable from "./components/tables/BasicTables/AttendenceTable";
 import LeaveRequestTable from "./components/tables/BasicTables/LeaveRequest";
+import EditElements from "./pages/Forms/EditForm";
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
+            <Route path="/edit-form" element={<EditElements />} />
 
             {/* Tables */}
             <Route path="/employee-tables" element={<EmployeeTable />} />

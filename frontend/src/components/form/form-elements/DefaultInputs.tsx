@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Field {
   name: string;
@@ -11,16 +11,25 @@ interface Field {
 interface FormProps {
   title: string;
   fields: Field[];
+  initialValue?: {};
   onSubmit: (data: any) => void | Promise<void>;
   submitText?: string;
 }
 
-interface FormConfig {
+export interface FormConfig {
   config: FormProps;
 }
 
 export default function DynamicForm({ config }: FormConfig) {
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, any>>(
+    config.initialValue || {},
+  );
+
+  useEffect(() => {
+    if (config.initialValue) {
+      setFormData(config.initialValue);
+    }
+  }, [config.initialValue]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -52,6 +61,7 @@ export default function DynamicForm({ config }: FormConfig) {
                   type="text"
                   name={field.name}
                   placeholder={field.placeholder}
+                  value={formData[field.name] ?? ""}
                   className="w-full rounded-md border px-3 py-2"
                   onChange={handleChange}
                 />
@@ -69,6 +79,7 @@ export default function DynamicForm({ config }: FormConfig) {
                   type="number"
                   name={field.name}
                   placeholder={field.label}
+                  value={formData[field.name] ?? ""}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   onChange={handleChange}
                 />
@@ -83,6 +94,7 @@ export default function DynamicForm({ config }: FormConfig) {
                   type="email"
                   name={field.name}
                   placeholder={field.placeholder}
+                  value={formData[field.name] ?? ""}
                   className="w-full rounded-md border px-3 py-2"
                   onChange={handleChange}
                 />
@@ -95,6 +107,7 @@ export default function DynamicForm({ config }: FormConfig) {
                 <label>{field.label}</label>
                 <textarea
                   name={field.name}
+                  value={formData[field.name] ?? ""}
                   className="w-full rounded-md border px-3 py-2"
                   onChange={handleChange}
                 />
@@ -108,6 +121,7 @@ export default function DynamicForm({ config }: FormConfig) {
                 <select
                   name={field.name}
                   className="w-full rounded-md border px-3 py-2"
+                  value={formData[field.name] ?? ""}
                   onChange={handleChange}
                 >
                   {field.options?.map((option) => (

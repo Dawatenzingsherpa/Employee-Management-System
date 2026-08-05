@@ -10,6 +10,7 @@ export interface DepartmentData {
 export interface Department {
   departments: DepartmentData[];
   status: Status;
+  singleDepartment: DepartmentData;
 }
 
 export interface DepartmentInput {

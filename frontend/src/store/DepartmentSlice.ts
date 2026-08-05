@@ -12,6 +12,7 @@ import {
 const initialState: Department = {
   departments: [],
   status: Status.LOADING,
+  singleDepartment: {} as DepartmentData,
 };
 
 const departmentSlice = createSlice({
@@ -39,6 +40,12 @@ const departmentSlice = createSlice({
     setAddDepartment(state: Department, action: PayloadAction<DepartmentData>) {
       state.departments.push(action.payload);
     },
+    setSingleDepartment(
+      state: Department,
+      action: PayloadAction<DepartmentData>,
+    ) {
+      state.singleDepartment = action.payload;
+    },
   },
 });
 
@@ -47,6 +54,7 @@ export const {
   setDepartments,
   setDeleteDepartment,
   setAddDepartment,
+  setSingleDepartment,
 } = departmentSlice.actions;
 export default departmentSlice.reducer;
 
@@ -91,6 +99,23 @@ export function createDepartment(data: DepartmentInput) {
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setAddDepartment(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function updateDepartment(data: DepartmentInput, id: string) {
+  return async function updateDepartmentThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.patch(`department/${id}`, data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setSingleDepartment(response.data.data));
       } else {
         dispatch(setStatus(Status.ERROR));
       }

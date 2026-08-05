@@ -13,9 +13,12 @@ import {
   deleteDepartment,
   fetchDepartmentData,
   setDeleteDepartment,
+  setSingleDepartment,
 } from "../../../store/DepartmentSlice";
+import { useNavigate } from "react-router";
 
 export default function DepartmentTable() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { departments } = useAppSelector((state) => state.department);
   const handleDelete = async (id: string) => {
@@ -75,6 +78,20 @@ export default function DepartmentTable() {
                   ).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
+                  <button
+                    className="bg-blue-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200"
+                    onClick={() => {
+                      dispatch(setSingleDepartment(department));
+                      navigate("/edit-form", {
+                        state: {
+                          type: "department",
+                        },
+                      });
+                    }}
+                  >
+                    Edit
+                  </button>
+
                   <button
                     className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200"
                     onClick={() => handleDelete(department?.id)}

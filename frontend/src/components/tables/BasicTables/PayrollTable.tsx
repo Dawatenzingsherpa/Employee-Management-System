@@ -13,9 +13,12 @@ import {
   deletePayroll,
   fetchPayrollData,
   setDeletePayroll,
+  setSinglePayroll,
 } from "../../../store/PayrollSlice";
+import { useNavigate } from "react-router";
 
 export default function PayrollTable() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { payrollData } = useAppSelector((state) => state.payroll);
   const handleDelete = async (id: string) => {
@@ -107,6 +110,19 @@ export default function PayrollTable() {
                   ${payroll.netPay.toLocaleString()}
                 </TableCell>
                 <TableCell>
+                  {/* <button
+                    className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200"
+                    onClick={() => {
+                      dispatch(setSinglePayroll(payroll));
+                      navigate("/edit-form", {
+                        state: {
+                          type: "payroll",
+                        },
+                      });
+                    }}
+                  >
+                    Edit
+                  </button> */}
                   <button
                     className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200"
                     onClick={() => handleDelete(payroll?.id)}

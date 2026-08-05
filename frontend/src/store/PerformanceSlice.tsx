@@ -12,6 +12,7 @@ import {
 const initialState: Performances = {
   performanceData: [],
   status: Status.LOADING,
+  singlePerformance: {} as PerformanceData,
 };
 
 const performanceSlice = createSlice({
@@ -45,6 +46,12 @@ const performanceSlice = createSlice({
     ) {
       state.performanceData.push(action.payload);
     },
+    setSinglePerformance(
+      state: Performances,
+      action: PayloadAction<PerformanceData>,
+    ) {
+      state.singlePerformance = action.payload;
+    },
   },
 });
 
@@ -53,6 +60,7 @@ export const {
   setPerformances,
   setDeletePerformance,
   setAddPerformance,
+  setSinglePerformance,
 } = performanceSlice.actions;
 export default performanceSlice.reducer;
 
@@ -98,6 +106,23 @@ export function createPerformance(data: PerformanceInput) {
       if (response) {
         dispatch(setStatus(Status.SUCCESS));
         dispatch(setAddPerformance(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function updatePerformance(data: PerformanceInput, id: string) {
+  return async function updatePerformanceThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.patch(`performance/${id}`, data);
+      console.log(response.data.data);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
       } else {
         dispatch(setStatus(Status.ERROR));
       }
