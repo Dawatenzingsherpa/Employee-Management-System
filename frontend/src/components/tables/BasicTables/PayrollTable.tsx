@@ -13,12 +13,11 @@ import {
   deletePayroll,
   fetchPayrollData,
   setDeletePayroll,
-  setSinglePayroll,
 } from "../../../store/PayrollSlice";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 
 export default function PayrollTable() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { payrollData } = useAppSelector((state) => state.payroll);
   const handleDelete = async (id: string) => {
