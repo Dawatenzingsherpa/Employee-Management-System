@@ -7,7 +7,7 @@ import {
 } from "../../ui/table";
 
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   deleteDepartment,
@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router";
 export default function DepartmentTable() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [search, setSearch] = useState("");
   const { departments } = useAppSelector((state) => state.department);
   const handleDelete = async (id: string) => {
     await dispatch(setDeleteDepartment(id));
@@ -30,8 +31,25 @@ export default function DepartmentTable() {
     dispatch(fetchDepartmentData());
   }, [dispatch]);
 
+  const filteredDepartment = departments.filter((data) => {
+    const matchesSearch = data?.departmentName
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    return matchesSearch;
+  });
+
   return (
     <>
+      <div className="p-4">
+        <input
+          type="text"
+          placeholder="Search "
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+        />
+      </div>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
@@ -61,7 +79,7 @@ export default function DepartmentTable() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {departments.map((department) => (
+              {filteredDepartment.map((department) => (
                 <TableRow key={department?.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start">
                     <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">

@@ -7,7 +7,7 @@ import {
 } from "../../ui/table";
 
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   deletePayroll,
@@ -20,6 +20,7 @@ import { Link } from "react-router";
 export default function PayrollTable() {
   // const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [search, setSearch] = useState("");
   const { payrollData } = useAppSelector((state) => state.payroll);
   const handleDelete = async (id: string) => {
     await dispatch(setDeletePayroll(id));
@@ -30,8 +31,25 @@ export default function PayrollTable() {
     dispatch(fetchPayrollData());
   }, [dispatch]);
 
+  const filteredPayroll = payrollData.filter((data) => {
+    const matchesSearch = data?.Employee?.firstName
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    return matchesSearch;
+  });
+
   return (
     <>
+      <div className="p-4">
+        <input
+          type="text"
+          placeholder="Search "
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+        />
+      </div>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
@@ -85,7 +103,7 @@ export default function PayrollTable() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {payrollData.map((payroll) => (
+              {filteredPayroll.map((payroll) => (
                 <TableRow key={payroll.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                     {payroll?.Employee

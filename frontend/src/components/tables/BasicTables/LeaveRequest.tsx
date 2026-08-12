@@ -7,7 +7,7 @@ import {
 } from "../../ui/table";
 
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   changeRequestStatus,
@@ -18,6 +18,7 @@ import { Link } from "react-router";
 export default function LeaveRequestTable() {
   const dispatch = useAppDispatch();
   const { leaveRequestData } = useAppSelector((state) => state.leaveRequest);
+  const [search, setSearch] = useState("");
 
   const handleStatusChange = (id: string, status: string) => {
     dispatch(changeRequestStatus(status, id));
@@ -27,8 +28,25 @@ export default function LeaveRequestTable() {
     dispatch(fetchLeaveRequestData());
   }, [dispatch]);
 
+  const filteredLeaveRequest = leaveRequestData.filter((data) => {
+    const matchesSearch = data?.Employee?.firstName
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    return matchesSearch;
+  });
+
   return (
     <>
+      <div className="p-4">
+        <input
+          type="text"
+          placeholder="Search "
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+        />
+      </div>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
@@ -64,7 +82,7 @@ export default function LeaveRequestTable() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {leaveRequestData.map((leave) => (
+              {filteredLeaveRequest.map((leave) => (
                 <TableRow key={leave?.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                     {leave?.Employee

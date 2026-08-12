@@ -7,7 +7,7 @@ import {
 } from "../../ui/table";
 
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   deletePerformance,
@@ -21,6 +21,7 @@ import { Link, useNavigate } from "react-router";
 export default function PerformanceTable() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [search, setSearch] = useState("");
   const { performanceData } = useAppSelector((state) => state.performance);
   const handleDelete = async (id: string) => {
     await dispatch(setDeletePerformance(id));
@@ -31,8 +32,25 @@ export default function PerformanceTable() {
     dispatch(fetchPerformanceData());
   }, [dispatch]);
 
+  const filteredPerformance = performanceData.filter((data) => {
+    const matchesSearch = data?.Employee?.firstName
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    return matchesSearch;
+  });
+
   return (
     <>
+      <div className="p-4">
+        <input
+          type="text"
+          placeholder="Search "
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+        />
+      </div>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
@@ -86,7 +104,7 @@ export default function PerformanceTable() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {performanceData.map((performance) => (
+              {filteredPerformance.map((performance) => (
                 <TableRow key={performance.id}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                     {performance?.Employee
