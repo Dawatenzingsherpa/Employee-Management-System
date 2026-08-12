@@ -118,3 +118,20 @@ export function updateEmployee(data: EmployeeInput, id: string) {
     }
   };
 }
+
+export function fetchSingleEmployee(id: string) {
+  return async function fetchSingleEmployeeThunk(dispatch: AppDispatch) {
+    dispatch(setStatus(Status.LOADING));
+    try {
+      const response = await APIAuthenticated.get(`employee/${id}`);
+      if (response) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(setSingleEmployee(response.data.data));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}

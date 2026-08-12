@@ -24,6 +24,7 @@ import PayrollTable from "./components/tables/BasicTables/PayrollTable";
 import AttendenceTable from "./components/tables/BasicTables/AttendenceTable";
 import LeaveRequestTable from "./components/tables/BasicTables/LeaveRequest";
 import EditElements from "./pages/Forms/EditForm";
+import EmployeeDetails from "./pages/SinglePage/SinglePage";
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
+            <Route path="/singlePage/:id" element={<EmployeeDetails />} />
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
