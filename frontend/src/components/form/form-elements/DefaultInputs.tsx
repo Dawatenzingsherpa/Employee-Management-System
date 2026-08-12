@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface Field {
   name: string;
   label: string;
   type: string;
   placeholder?: string;
-  options?: string[];
+  options?: {
+    label: string;
+    value: string;
+  }[];
 }
 
 interface FormProps {
@@ -47,6 +52,7 @@ export default function DynamicForm({ config }: FormConfig) {
 
     config.onSubmit(formData);
   };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="text-2xl font-semibold">{config.title}</h2>
@@ -68,6 +74,32 @@ export default function DynamicForm({ config }: FormConfig) {
               </div>
             );
 
+          case "date":
+            return (
+              <div key={field.name}>
+                <label>{field.label}</label>
+                <div>
+                  <DatePicker
+                    selected={
+                      formData[field.name]
+                        ? new Date(formData[field.name])
+                        : null
+                    }
+                    onChange={(date: Date | null) =>
+                      setFormData({
+                        ...formData,
+                        [field.name]: date
+                          ? date.toISOString().split("T")[0]
+                          : "",
+                      })
+                    }
+                    placeholderText="Select date"
+                    dateFormat="yyyy-MM-dd"
+                    className="w-full rounded-md border px-3 py-2"
+                  />
+                </div>
+              </div>
+            );
           case "number":
             return (
               <div key={field.name}>
@@ -125,7 +157,9 @@ export default function DynamicForm({ config }: FormConfig) {
                   onChange={handleChange}
                 >
                   {field.options?.map((option) => (
-                    <option key={option}>{option}</option>
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
                   ))}
                 </select>
               </div>

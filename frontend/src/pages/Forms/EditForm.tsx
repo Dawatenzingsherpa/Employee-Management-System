@@ -11,7 +11,10 @@ import {
   performanceField,
 } from "./FormData";
 import { DepartmentInput } from "../../types/DepartmentTypes";
-import { updateDepartment } from "../../store/DepartmentSlice";
+import {
+  fetchDepartmentData,
+  updateDepartment,
+} from "../../store/DepartmentSlice";
 import { useLocation } from "react-router";
 import { EmployeeInput } from "../../types/EmployeeTypes";
 import { updateEmployee } from "../../store/EmployeeSlice";
@@ -19,11 +22,13 @@ import { PayrollInput } from "../../types/PayrollTypes";
 import { updatePayroll } from "../../store/PayrollSlice";
 import { PerformanceInput } from "../../types/PerformanceTyps";
 import { updatePerformance } from "../../store/PerformanceSlice";
+import { useEffect } from "react";
 
 export default function EditElements() {
   type FormType = keyof typeof editConfig;
 
   const dispatch = useAppDispatch();
+  const { departments } = useAppSelector((state) => state.department);
   const { type } = useLocation().state as {
     type: FormType;
   };
@@ -31,6 +36,11 @@ export default function EditElements() {
   const { singleEmployee } = useAppSelector((state) => state.employee);
   const { singlePayroll } = useAppSelector((state) => state.payroll);
   const { singlePerformance } = useAppSelector((state) => state.performance);
+
+  useEffect(() => {
+    dispatch(fetchDepartmentData());
+  }, [dispatch]);
+
   const editConfig = {
     department: {
       title: "Edit Department",
@@ -42,7 +52,7 @@ export default function EditElements() {
     },
     employee: {
       title: "Edit Employee",
-      fields: employeeField,
+      fields: employeeField(departments),
       initialValue: singleEmployee,
       submitText: "Update",
       onSubmit: (data: EmployeeInput) =>

@@ -117,6 +117,7 @@ class EmployeeController {
       phoneNumber,
       hireDate,
       salary,
+      departmentId,
     }: EmployeeData = req.body;
 
     const [data] = await Employee.findAll({
@@ -140,6 +141,7 @@ class EmployeeController {
         phoneNumber,
         hireDate,
         salary,
+        departmentId,
       },
       {
         where: {

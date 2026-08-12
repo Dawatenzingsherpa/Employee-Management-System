@@ -1,4 +1,6 @@
-export const employeeField = [
+import { DepartmentData } from "../../types/DepartmentTypes";
+
+export const employeeField = (departments: DepartmentData[]) => [
   {
     name: "firstName",
     label: "First Name",
@@ -26,7 +28,7 @@ export const employeeField = [
   {
     name: "hireDate",
     label: "Hire Date",
-    type: "text",
+    type: "date",
   },
   {
     name: "salary",
@@ -37,7 +39,11 @@ export const employeeField = [
   {
     name: "departmentId",
     label: "Department",
-    type: "text",
+    type: "select",
+    options: departments.map((department) => ({
+      label: department.departmentName,
+      value: department.id,
+    })),
   },
 ];
 
@@ -84,7 +90,7 @@ export const performanceField = [
   },
   {
     name: "employeeId",
-    label: "Employee",
+    label: "EmployeeId",
     type: "text",
   },
 ];

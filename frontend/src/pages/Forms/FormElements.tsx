@@ -9,14 +9,17 @@ import {
   payrollField,
   performanceField,
 } from "./FormData";
-import { useState } from "react";
-import { useAppDispatch } from "../../store/hook";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { createEmployee } from "../../store/EmployeeSlice";
 import { EmployeeInput } from "../../types/EmployeeTypes";
 import { PerformanceInput } from "../../types/PerformanceTyps";
 import { createPerformance } from "../../store/PerformanceSlice";
 import { createPayroll } from "../../store/PayrollSlice";
-import { createDepartment } from "../../store/DepartmentSlice";
+import {
+  createDepartment,
+  fetchDepartmentData,
+} from "../../store/DepartmentSlice";
 import { createLeaveRequest } from "../../store/LeaveRequestSlice";
 import { DepartmentInput } from "../../types/DepartmentTypes";
 import { PayrollInput } from "../../types/PayrollTypes";
@@ -26,11 +29,16 @@ export default function FormElements() {
   type FormType = keyof typeof forms;
   const [SelectForm, setSelectForm] = useState<FormType>("employee");
   const dispatch = useAppDispatch();
+  const { departments } = useAppSelector((state) => state.department);
+
+  useEffect(() => {
+    dispatch(fetchDepartmentData());
+  }, [dispatch]);
 
   const forms = {
     employee: {
       title: "Create Employee",
-      fields: employeeField,
+      fields: employeeField(departments),
       submitText: "Save Employee",
       onSubmit: (data: EmployeeInput) => dispatch(createEmployee(data)),
     },
