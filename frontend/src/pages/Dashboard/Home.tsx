@@ -175,7 +175,7 @@ export default function Home() {
 
           <div className="leave-list">
             {leaveRequestData.map((request) => (
-              <div className="leave-item" key={request?.Employee?.firstName}>
+              <div className="leave-item" key={request?.id}>
                 <div className="leave-info">
                   <strong>{request?.Employee?.firstName}</strong>
                   <small>{request?.date}</small>
@@ -220,7 +220,7 @@ export default function Home() {
 
             {performanceData.slice(0, 4).map((data) => (
               <>
-                <div className="performer">
+                <div className="performer" key={data?.id}>
                   <div className="performer-avatar">JD</div>
 
                   <div className="performer-info">

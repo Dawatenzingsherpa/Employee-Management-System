@@ -259,15 +259,9 @@ const AppSidebar: React.FC = () => {
       >
         <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <Link to="/" className="text-2xl font-bold text-blue-600">
-                EMS
-              </Link>
-            </>
+            <span className="text-2xl font-bold text-blue-600">EMS</span>
           ) : (
-            <Link to="/" className="text-2xl font-bold text-blue-600">
-              EMS
-            </Link>
+            <span className="text-2xl font-bold text-blue-600">E</span>
           )}
         </Link>
       </div>

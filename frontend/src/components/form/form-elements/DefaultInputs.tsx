@@ -156,6 +156,9 @@ export default function DynamicForm({ config }: FormConfig) {
                   value={formData[field.name] ?? ""}
                   onChange={handleChange}
                 >
+                  <option value="" disabled>
+                    Select {field.label}
+                  </option>
                   {field.options?.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}

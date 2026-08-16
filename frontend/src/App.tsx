@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -29,6 +31,8 @@ import EmployeeDetails from "./pages/SinglePage/SinglePage";
 export default function App() {
   return (
     <>
+      <ToastContainer position="bottom-right" style={{ zIndex: 99999 }} />
+
       <Router>
         <ScrollToTop />
         <Routes>

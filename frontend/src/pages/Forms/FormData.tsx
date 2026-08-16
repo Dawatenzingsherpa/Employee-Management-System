@@ -40,6 +40,7 @@ export const employeeField = (departments: DepartmentData[]) => [
     name: "departmentId",
     label: "Department",
     type: "select",
+
     options: departments.map((department) => ({
       label: department.departmentName,
       value: department.id,
