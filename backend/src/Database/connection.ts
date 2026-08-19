@@ -5,6 +5,7 @@ import Attendence from "./models/Attendence";
 import LeaveRequest from "./models/LeaveRequest";
 import Performance from "./models/Performance";
 import Payroll from "./models/Payroll";
+import User from "./models/User";
 
 const sequelize = new Sequelize({
   database: process.env.DB_NAME!,
@@ -44,5 +45,8 @@ Performance.belongsTo(Employee, { foreignKey: "employeeId" });
 
 Employee.hasMany(Payroll, { foreignKey: "employeeId" });
 Payroll.belongsTo(Employee, { foreignKey: "employeeId" });
+
+User.hasMany(Employee, { foreignKey: "user_id" });
+Employee.belongsTo(User, { foreignKey: "user_id" });
 
 export default sequelize;

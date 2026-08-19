@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, SubmitEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { Login, Status } from "../types/AuthTypes";
@@ -33,8 +33,9 @@ export default function SignInForm() {
     }
   }, [status, navigate]);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     dispatch(userLogin(loginData));
   };
 
@@ -214,26 +215,9 @@ export default function SignInForm() {
                   {/* Submit */}
                   <button
                     type="submit"
-                    disabled={status === Status.LOADING}
-                    className="
-                      h-[56px]
-                      w-full
-                      rounded-[10px]
-                      bg-[#2563eb]
-                      text-[16px]
-                      font-semibold
-                      text-white
-                      shadow-[0_2px_4px_rgba(76,99,255,0.15)]
-                      transition
-                      hover:bg-[#4358e8]
-                      focus:outline-none
-                      focus:ring-2
-                      focus:ring-[#4c63ff]
-                      focus:ring-offset-2
-                      disabled:cursor-not-allowed
-                    "
+                    className="h-[56px] w-full rounded-[10px] bg-[#2563eb] font-semibold text-white"
                   >
-                    Sign In
+                    Sign in
                   </button>
                 </div>
               </form>

@@ -44,7 +44,7 @@ class Employee extends Model{
   declare email: string
 
   @Column({
-    type : DataType.INTEGER,
+    type : DataType.STRING(10),
     validate : {
       len : {
         args : [10,10],

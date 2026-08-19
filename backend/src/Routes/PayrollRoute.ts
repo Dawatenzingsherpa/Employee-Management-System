@@ -10,6 +10,6 @@ router.route("/")
 .get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),PayrollController.fetchPayroll)
 
 router.route("/:id")
-.get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),PayrollController.fetchSinglePayroll)
+.get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin,Role.Employee),PayrollController.fetchSinglePayroll)
 .delete(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),PayrollController.deletePayroll)
 export default router

@@ -5,7 +5,7 @@ import User from "../Database/models/User";
 import { Role } from "../types/UserTypes";
 
 
-interface AuthRequest extends Request{
+export interface AuthRequest extends Request{
   user?:{
     id:string,
     username : string,

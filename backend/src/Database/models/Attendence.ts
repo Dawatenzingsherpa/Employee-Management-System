@@ -31,13 +31,13 @@ class Attendence extends Model {
   @Column({
     type :  DataType.DATE
   })
-  declare checkIn:Date
+  declare checkIn:Date | null
 
   
   @Column({
     type :  DataType.DATE
   })
-  declare checkOut: Date
+  declare checkOut: Date | null
 
   @Column({
     type : DataType.INTEGER

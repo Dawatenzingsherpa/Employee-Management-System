@@ -72,8 +72,12 @@ class PayrollController {
   }
 
   async fetchSinglePayroll(req: Request, res: Response): Promise<void> {
-    const { id } = req.params;
-    const data = await Payroll.findByPk(id as string);
+    const {id} = req.params
+    const data = await Payroll.findOne({
+      where : {
+        employeeId : id
+      }
+    })
 
     if (!data) {
       res.status(404).json({

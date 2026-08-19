@@ -2,6 +2,7 @@ import Employee from "../Database/models/Employee";
 import { Request, Response } from "express";
 import { EmployeeData } from "../types/employeeTypes";
 import Department from "../Database/models/Department";
+import { AuthRequest } from "../Middleware/AuthMiddleware";
 class EmployeeController {
   public static async addEmployee(req: Request, res: Response): Promise<void> {
     try {
@@ -85,6 +86,35 @@ class EmployeeController {
     const [data] = await Employee.findAll({
       where: {
         id,
+      },
+      include: {
+        model: Department,
+        attributes: ["id", "departmentName"],
+      },
+    });
+
+    if (!data) {
+      res.status(404).json({
+        message: "No employee Data with that id",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Data Fetched succesfully",
+      data,
+    });
+  }
+
+  public static async fetchSingleEmployeeByUserId(
+    req: AuthRequest,
+    res: Response,
+  ): Promise<void> {
+    const userId = req?.user?.id
+    console.log(userId)
+    const [data] = await Employee.findAll({
+      where: {
+        user_id : userId
       },
       include: {
         model: Department,

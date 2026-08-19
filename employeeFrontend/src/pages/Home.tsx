@@ -1,18 +1,6 @@
-import { useState } from "react";
-
-const fakeEmployee = {
-  id: "EMP-001",
-  firstName: "Aarav",
-  lastName: "Sharma",
-  email: "aarav.sharma@company.com",
-  phoneNumber: "9841234567",
-  department: "Engineering",
-  position: "Senior Software Engineer",
-  hireDate: "2023-04-15",
-  status: "Active",
-  employmentType: "Full Time",
-  address: "Kathmandu, Nepal",
-};
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { fetchSingleEmployee } from "../store/dataSlice";
 
 const attendanceData = [
   {
@@ -195,6 +183,12 @@ const SectionTitle = ({
 );
 
 const Home = () => {
+  const dispatch = useAppDispatch();
+  const { employee } = useAppSelector((state) => state.data);
+
+  useEffect(() => {
+    dispatch(fetchSingleEmployee());
+  }, []);
   const [activeTab, setActiveTab] = useState("overview");
 
   const currency = (value: number) => `NPR ${value.toLocaleString("en-NP")}`;
@@ -205,10 +199,6 @@ const Home = () => {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <button className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-blue-600">
-              ← Back to Employees
-            </button>
-
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Employee Details
             </h1>
@@ -216,16 +206,6 @@ const Home = () => {
             <p className="mt-1 text-sm text-gray-500">
               View employee information, attendance, payroll and performance.
             </p>
-          </div>
-
-          <div className="flex gap-2">
-            <button className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
-              Edit Employee
-            </button>
-
-            <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700">
-              Export
-            </button>
           </div>
         </div>
 
@@ -237,20 +217,19 @@ const Home = () => {
             <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
                 <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-4 border-white bg-gradient-to-br from-blue-500 to-indigo-600 text-2xl font-bold text-white shadow-md dark:border-gray-900">
-                  AS
+                  {employee.firstName.slice(0, 1) +
+                    employee.lastName.slice(0, 1)}
                 </div>
 
                 <div className="pb-1">
                   <div className="flex flex-wrap items-center gap-3">
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {fakeEmployee.firstName} {fakeEmployee.lastName}
+                      {employee?.firstName} {employee?.lastName}
                     </h2>
-
-                    <StatusBadge status={fakeEmployee.status} />
                   </div>
 
                   <p className="mt-1 text-sm text-gray-500">
-                    {fakeEmployee.position} · {fakeEmployee.department}
+                    {employee?.Department?.departmentName}
                   </p>
                 </div>
               </div>
@@ -265,28 +244,28 @@ const Home = () => {
               <div>
                 <p className="text-xs text-gray-400">Email</p>
                 <p className="mt-1 text-sm font-medium text-gray-800 dark:text-gray-200">
-                  {fakeEmployee.email}
+                  {employee?.email}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">Phone</p>
                 <p className="mt-1 text-sm font-medium text-gray-800 dark:text-gray-200">
-                  +977 {fakeEmployee.phoneNumber}
+                  +977 {employee?.phoneNumber}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">Department</p>
                 <p className="mt-1 text-sm font-medium text-gray-800 dark:text-gray-200">
-                  {fakeEmployee.department}
+                  {employee?.Department?.departmentName}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-gray-400">Employee ID</p>
                 <p className="mt-1 text-sm font-medium text-gray-800 dark:text-gray-200">
-                  {fakeEmployee.id}
+                  {employee?.id}
                 </p>
               </div>
             </div>
@@ -322,14 +301,15 @@ const Home = () => {
               />
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <InfoCard label="Employee ID" value={fakeEmployee.id} />
-                <InfoCard label="Department" value={fakeEmployee.department} />
-                <InfoCard label="Position" value={fakeEmployee.position} />
+                <InfoCard label="Employee ID" value={employee?.id} />
+                <InfoCard
+                  label="Department"
+                  value={employee?.Department?.departmentName}
+                />
                 <InfoCard label="Employment Type" value="Full Time" />
-                <InfoCard label="Date Joined" value={fakeEmployee.hireDate} />
-                <InfoCard label="Status" value={fakeEmployee.status} />
+                <InfoCard label="Date Joined" value={employee?.hireDate} />
+                <InfoCard label="Status" value="Active" />
                 <InfoCard label="Location" value="Kathmandu, Nepal" />
-                <InfoCard label="Manager" value="Rohan Thapa" />
               </div>
             </div>
 
@@ -340,49 +320,13 @@ const Home = () => {
               />
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <InfoCard label="Email" value={fakeEmployee.email} />
+                <InfoCard label="Email" value={employee?.email} />
                 <InfoCard
                   label="Phone"
-                  value={`+977 ${fakeEmployee.phoneNumber}`}
+                  value={`+977 ${employee?.phoneNumber}`}
                 />
-                <InfoCard label="Address" value={fakeEmployee.address} />
+                <InfoCard label="Address" value="Kathmandu, Nepal" />
               </div>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                {
-                  label: "Attendance",
-                  value: "95%",
-                  color: "text-blue-600",
-                },
-                {
-                  label: "Leave Balance",
-                  value: "12 Days",
-                  color: "text-green-600",
-                },
-                {
-                  label: "Performance",
-                  value: "92.25",
-                  color: "text-purple-600",
-                },
-                {
-                  label: "Monthly Salary",
-                  value: "NPR 103.5K",
-                  color: "text-orange-600",
-                },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900"
-                >
-                  <p className="text-sm text-gray-500">{stat.label}</p>
-                  <p className={`mt-2 text-2xl font-bold ${stat.color}`}>
-                    {stat.value}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
         )}
