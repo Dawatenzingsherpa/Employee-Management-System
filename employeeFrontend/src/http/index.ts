@@ -13,8 +13,16 @@ export const APIAuthenticated = axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
-    Authorization : `${localStorage.getItem("token")}`
+    Authorization: `${localStorage.getItem("token")}`,
   },
+});
+
+APIAuthenticated.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
 });
 
 export default API;

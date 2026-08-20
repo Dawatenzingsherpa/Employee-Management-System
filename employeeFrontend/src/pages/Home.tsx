@@ -1,14 +1,17 @@
-import { ChangeEvent,SubmitEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import { addLeaveRequest, checkIn, checkOut, fetchSingleAttendence, fetchSingleEmployee, fetchSingleLeaveRequest, fetchSinglePayroll, fetchSinglePerformance } from "../store/dataSlice";
-
-
-
-
-
-
-
-
+import {
+  addLeaveRequest,
+  checkIn,
+  checkOut,
+  fetchSingleAttendence,
+  fetchSingleEmployee,
+  fetchSingleLeaveRequest,
+  fetchSinglePayroll,
+  fetchSinglePerformance,
+} from "../store/dataSlice";
+import { useNavigate } from "react-router";
+import { userLogout } from "../store/authSlice";
 
 const tabs = [
   { id: "overview", label: "Overview" },
@@ -77,45 +80,64 @@ const SectionTitle = ({
 );
 
 const Home = () => {
-  const dispatch = useAppDispatch();
-  const [isOpen,setIsOpen] = useState<boolean>(false)
-  const { employee, attendenceData,payrollData ,performanceData,leaveRequestData} = useAppSelector((state) => state.data);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchSingleEmployee());
+    const token = localStorage.getItem("token");
+    if (!token || token === null || token == undefined) navigate("/signin");
   }, []);
+
+  const dispatch = useAppDispatch();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { token } = useAppSelector((state) => state.auth);
+  console.log(token);
+  const {
+    employee,
+    attendenceData,
+    payrollData,
+    performanceData,
+    leaveRequestData,
+  } = useAppSelector((state) => state.data);
+
+  useEffect(() => {
+    if (!token) return;
+    console.log("tokne useeffect", token);
+    dispatch(fetchSingleEmployee());
+  }, [token]);
 
   useEffect(() => {
     dispatch(fetchSingleAttendence(employee.id));
-    dispatch(fetchSinglePayroll(employee.id))
-    dispatch(fetchSinglePerformance(employee.id))
-    dispatch(fetchSingleLeaveRequest(employee.id))
+    dispatch(fetchSinglePayroll(employee.id));
+    dispatch(fetchSinglePerformance(employee.id));
+    dispatch(fetchSingleLeaveRequest(employee.id));
   }, [employee]);
 
-
   const [activeTab, setActiveTab] = useState("overview");
-  const [formData,setFormData] = useState({
-    leaveDate : "",
-    employeeId : ""
-  })
+  const [formData, setFormData] = useState({
+    leaveDate: "",
+    employeeId: "",
+  });
 
-  const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
-    const {name,value} = e.target
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name] : value,
-    employeeId : employee ? employee.id : ""
+      [name]: value,
+      employeeId: employee ? employee.id : "",
+    });
+  };
 
-    })
-  }
-
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("SUBMITTED");
-    dispatch(addLeaveRequest(formData))
-  }
+    dispatch(addLeaveRequest(formData));
+  };
 
-  console.log(formData)
+  const handleLogOut = () => {
+    dispatch(userLogout());
+    navigate("/signin");
+  };
+
   const currency = (value: number) => `NPR ${value.toLocaleString("en-NP")}`;
 
   return (
@@ -123,15 +145,23 @@ const Home = () => {
       <div className="mx-auto max-w-7xl space-y-6">
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Employee Details
-            </h1>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Employee Details
+              </h1>
 
-            <p className="mt-1 text-sm text-gray-500">
-              View employee information, attendance, payroll and performance.
-            </p>
+              <p className="mt-1 text-sm text-gray-500">
+                View employee information, attendance, payroll and performance.
+              </p>
+            </div>
           </div>
+          <button
+            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+            onClick={handleLogOut}
+          >
+            Logout
+          </button>
         </div>
 
         {/* Profile */}
@@ -265,14 +295,13 @@ const Home = () => {
                 description="Employee attendance history"
               />
               <div className="flex gap-4">
-  <button className="rounded-lg bg-green-600 px-6 py-3 font-medium text-white hover:bg-green-700"
-  onClick={()=>dispatch(checkIn(employee.id))}>
-    Check In
-  </button>
-
- 
-</div>
-
+                <button
+                  className="rounded-lg bg-green-600 px-6 py-3 font-medium text-white hover:bg-green-700"
+                  onClick={() => dispatch(checkIn(employee.id))}
+                >
+                  Check In
+                </button>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
@@ -285,7 +314,7 @@ const Home = () => {
                       "Check Out",
                       "Working Hours",
                       "Overtime",
-                      "action"
+                      "action",
                     ].map((header) => (
                       <th
                         key={header}
@@ -308,11 +337,17 @@ const Home = () => {
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {new Date(attendance?.checkIn as string).toLocaleString()}
+                        {new Date(
+                          attendance?.checkIn as string,
+                        ).toLocaleString()}
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {attendance?.checkOut ? new Date(attendance?.checkOut as string).toLocaleString() : null}
+                        {attendance?.checkOut
+                          ? new Date(
+                              attendance?.checkOut as string,
+                            ).toLocaleString()
+                          : null}
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-500">
@@ -323,12 +358,13 @@ const Home = () => {
                         {attendance?.overtime}
                       </td>
                       <td>
-                         <button className="rounded-lg bg-red-600 px-6 py-3 font-medium text-white hover:bg-red-700"
-  onClick={()=>dispatch(checkOut(attendance?.id))}>
-    Check Out
-  </button>
+                        <button
+                          className="rounded-lg bg-red-600 px-6 py-3 font-medium text-white hover:bg-red-700"
+                          onClick={() => dispatch(checkOut(attendance?.id))}
+                        >
+                          Check Out
+                        </button>
                       </td>
-                      
                     </tr>
                   ))}
                 </tbody>
@@ -346,50 +382,51 @@ const Home = () => {
                 description="Employee leave request history"
               />
 
-              <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-              onClick={()=>setIsOpen(true)}>
+              <button
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                onClick={() => setIsOpen(true)}
+              >
                 + Request Leave
               </button>
             </div>
 
+            {isOpen ? (
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-4 rounded-lg border bg-white p-6 shadow-sm"
+              >
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="leaveDate"
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Leave Date
+                  </label>
 
-{isOpen ? <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-lg border bg-white p-6 shadow-sm">
-  <div className="flex flex-col gap-2">
-    <label
-      htmlFor="leaveDate"
-      className="text-sm font-medium text-gray-700"
-    >
-      Leave Date
-    </label>
+                  <input
+                    type="date"
+                    id="leaveDate"
+                    name="leaveDate"
+                    value={formData.leaveDate}
+                    onChange={handleChange}
+                    className="rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  />
+                </div>
 
-    <input
-      type="date"
-      id="leaveDate"
-      name="leaveDate"
-      value={formData.leaveDate}
-      onChange={handleChange}
-      className="rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-    />
-  </div>
-
-  <button
-    type="submit"
-    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-  >
-    Submit
-  </button>
-</form>
- : null}
+                <button
+                  type="submit"
+                  className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                >
+                  Submit
+                </button>
+              </form>
+            ) : null}
 
             <div className="overflow-x-auto">
               <table className="w-full min-w-[750px] text-left">
                 <thead className="bg-gray-50 dark:bg-gray-800/50">
                   <tr>
-                    {[
-                      "Requested On",
-                      "Leave Date",
-                      "Status",
-                    ].map((header) => (
+                    {["Requested On", "Leave Date", "Status"].map((header) => (
                       <th
                         key={header}
                         className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500"
@@ -414,15 +451,9 @@ const Home = () => {
                         {leave?.leaveDate}
                       </td>
 
-                    
-
-                     
-
                       <td className="px-6 py-4">
                         <StatusBadge status={leave?.requestStatus} />
                       </td>
-
-                      
                     </tr>
                   ))}
                 </tbody>
@@ -434,8 +465,6 @@ const Home = () => {
         {/* Performance */}
         {activeTab === "performance" && (
           <div className="space-y-6">
-           
-
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
               <div className="border-b border-gray-100 p-6 dark:border-gray-800">
                 <SectionTitle
@@ -474,8 +503,10 @@ const Home = () => {
                         className="transition hover:bg-gray-50 dark:hover:bg-gray-800/40"
                       >
                         <td className="px-6 py-4 text-sm font-semibold text-gray-800 dark:text-gray-200">
-                          {new Date(performance?.createdAt as string).toLocaleString("en-US",{
-                            month : "long"
+                          {new Date(
+                            performance?.createdAt as string,
+                          ).toLocaleString("en-US", {
+                            month: "long",
                           })}
                         </td>
 
@@ -502,8 +533,6 @@ const Home = () => {
                         <td className="px-6 py-4">
                           <StatusBadge status={performance?.rating} />
                         </td>
-
-                        
                       </tr>
                     ))}
                   </tbody>
@@ -516,8 +545,6 @@ const Home = () => {
         {/* Payroll */}
         {activeTab === "payroll" && (
           <div className="space-y-6">
-            
-
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
               <div className="border-b border-gray-100 p-6 dark:border-gray-800">
                 <SectionTitle
@@ -538,7 +565,6 @@ const Home = () => {
                         "Bonus",
                         "Deduction",
                         "Net Pay",
-                        
                       ].map((header) => (
                         <th
                           key={header}
@@ -557,8 +583,10 @@ const Home = () => {
                         className="transition hover:bg-gray-50 dark:hover:bg-gray-800/40"
                       >
                         <td className="px-6 py-4 text-sm font-semibold text-gray-800 dark:text-gray-200">
-                          {new Date(payroll?.createdAt as string).toLocaleString("en-US",{
-                            month : "long"
+                          {new Date(
+                            payroll?.createdAt as string,
+                          ).toLocaleString("en-US", {
+                            month: "long",
                           })}
                         </td>
 
@@ -585,8 +613,6 @@ const Home = () => {
                         <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">
                           {currency(payroll?.netPay)}
                         </td>
-
-                        
                       </tr>
                     ))}
                   </tbody>
