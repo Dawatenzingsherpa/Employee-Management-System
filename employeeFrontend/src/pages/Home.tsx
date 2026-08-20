@@ -1,120 +1,14 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent,SubmitEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import { fetchSingleEmployee } from "../store/dataSlice";
+import { addLeaveRequest, checkIn, checkOut, fetchSingleAttendence, fetchSingleEmployee, fetchSingleLeaveRequest, fetchSinglePayroll, fetchSinglePerformance } from "../store/dataSlice";
 
-const attendanceData = [
-  {
-    id: 1,
-    date: "2026-08-18",
-    checkIn: "09:02 AM",
-    checkOut: "06:15 PM",
-    overtime: "1h 15m",
-  },
-  {
-    id: 2,
-    date: "2026-08-17",
-    checkIn: "08:55 AM",
-    checkOut: "05:45 PM",
-    overtime: "0h",
-  },
-  {
-    id: 3,
-    date: "2026-08-16",
-    checkIn: "09:10 AM",
-    checkOut: "06:30 PM",
-    overtime: "1h 30m",
-  },
-  {
-    id: 4,
-    date: "2026-08-15",
-    checkIn: "09:00 AM",
-    checkOut: "05:50 PM",
-    overtime: "0h",
-  },
-];
 
-const leaveData = [
-  {
-    id: 1,
-    requestedOn: "2026-08-10",
-    leaveDate: "2026-08-25",
-    type: "Casual Leave",
-    reason: "Personal work",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    requestedOn: "2026-07-20",
-    leaveDate: "2026-08-05",
-    type: "Sick Leave",
-    reason: "Medical appointment",
-    status: "Approved",
-  },
-  {
-    id: 3,
-    requestedOn: "2026-06-15",
-    leaveDate: "2026-07-01",
-    type: "Annual Leave",
-    reason: "Vacation",
-    status: "Rejected",
-  },
-];
 
-const payrollData = [
-  {
-    id: 1,
-    month: "August 2026",
-    basicSalary: 85000,
-    allowance: 10000,
-    overtimePay: 5000,
-    bonus: 8000,
-    deduction: 4500,
-    netPay: 103500,
-  },
-  {
-    id: 2,
-    month: "July 2026",
-    basicSalary: 85000,
-    allowance: 10000,
-    overtimePay: 3500,
-    bonus: 5000,
-    deduction: 4500,
-    netPay: 99000,
-  },
-  {
-    id: 3,
-    month: "June 2026",
-    basicSalary: 85000,
-    allowance: 10000,
-    overtimePay: 2500,
-    bonus: 0,
-    deduction: 4500,
-    netPay: 93000,
-  },
-];
 
-const performanceData = [
-  {
-    id: 1,
-    period: "Q2 2026",
-    attendance: 95,
-    quality: 92,
-    productivity: 88,
-    teamwork: 94,
-    totalScore: 92.25,
-    rating: "Excellent",
-  },
-  {
-    id: 2,
-    period: "Q1 2026",
-    attendance: 91,
-    quality: 88,
-    productivity: 90,
-    teamwork: 89,
-    totalScore: 89.5,
-    rating: "Good",
-  },
-];
+
+
+
+
 
 const tabs = [
   { id: "overview", label: "Overview" },
@@ -184,13 +78,44 @@ const SectionTitle = ({
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const { employee } = useAppSelector((state) => state.data);
+  const [isOpen,setIsOpen] = useState<boolean>(false)
+  const { employee, attendenceData,payrollData ,performanceData,leaveRequestData} = useAppSelector((state) => state.data);
 
   useEffect(() => {
     dispatch(fetchSingleEmployee());
   }, []);
-  const [activeTab, setActiveTab] = useState("overview");
 
+  useEffect(() => {
+    dispatch(fetchSingleAttendence(employee.id));
+    dispatch(fetchSinglePayroll(employee.id))
+    dispatch(fetchSinglePerformance(employee.id))
+    dispatch(fetchSingleLeaveRequest(employee.id))
+  }, [employee]);
+
+
+  const [activeTab, setActiveTab] = useState("overview");
+  const [formData,setFormData] = useState({
+    leaveDate : "",
+    employeeId : ""
+  })
+
+  const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
+    const {name,value} = e.target
+    setFormData({
+      ...formData,
+      [name] : value,
+    employeeId : employee ? employee.id : ""
+
+    })
+  }
+
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
+    console.log("SUBMITTED");
+    dispatch(addLeaveRequest(formData))
+  }
+
+  console.log(formData)
   const currency = (value: number) => `NPR ${value.toLocaleString("en-NP")}`;
 
   return (
@@ -217,8 +142,8 @@ const Home = () => {
             <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
                 <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-4 border-white bg-gradient-to-br from-blue-500 to-indigo-600 text-2xl font-bold text-white shadow-md dark:border-gray-900">
-                  {employee.firstName.slice(0, 1) +
-                    employee.lastName.slice(0, 1)}
+                  {employee?.firstName?.slice(0, 1) +
+                    employee?.lastName?.slice(0, 1)}
                 </div>
 
                 <div className="pb-1">
@@ -339,6 +264,15 @@ const Home = () => {
                 title="Attendance"
                 description="Employee attendance history"
               />
+              <div className="flex gap-4">
+  <button className="rounded-lg bg-green-600 px-6 py-3 font-medium text-white hover:bg-green-700"
+  onClick={()=>dispatch(checkIn(employee.id))}>
+    Check In
+  </button>
+
+ 
+</div>
+
             </div>
 
             <div className="overflow-x-auto">
@@ -351,7 +285,7 @@ const Home = () => {
                       "Check Out",
                       "Working Hours",
                       "Overtime",
-                      "Status",
+                      "action"
                     ].map((header) => (
                       <th
                         key={header}
@@ -364,21 +298,21 @@ const Home = () => {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {attendanceData.map((attendance) => (
+                  {attendenceData.map((attendance) => (
                     <tr
-                      key={attendance.id}
+                      key={attendance?.id}
                       className="transition hover:bg-gray-50 dark:hover:bg-gray-800/40"
                     >
                       <td className="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-                        {attendance.date}
+                        {attendance?.date}
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {attendance.checkIn}
+                        {new Date(attendance?.checkIn as string).toLocaleString()}
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {attendance.checkOut}
+                        {attendance?.checkOut ? new Date(attendance?.checkOut as string).toLocaleString() : null}
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-500">
@@ -386,12 +320,15 @@ const Home = () => {
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {attendance.overtime}
+                        {attendance?.overtime}
                       </td>
-
-                      <td className="px-6 py-4">
-                        <StatusBadge status="Active" />
+                      <td>
+                         <button className="rounded-lg bg-red-600 px-6 py-3 font-medium text-white hover:bg-red-700"
+  onClick={()=>dispatch(checkOut(attendance?.id))}>
+    Check Out
+  </button>
                       </td>
+                      
                     </tr>
                   ))}
                 </tbody>
@@ -409,10 +346,40 @@ const Home = () => {
                 description="Employee leave request history"
               />
 
-              <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+              <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              onClick={()=>setIsOpen(true)}>
                 + Request Leave
               </button>
             </div>
+
+
+{isOpen ? <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-lg border bg-white p-6 shadow-sm">
+  <div className="flex flex-col gap-2">
+    <label
+      htmlFor="leaveDate"
+      className="text-sm font-medium text-gray-700"
+    >
+      Leave Date
+    </label>
+
+    <input
+      type="date"
+      id="leaveDate"
+      name="leaveDate"
+      value={formData.leaveDate}
+      onChange={handleChange}
+      className="rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+    />
+  </div>
+
+  <button
+    type="submit"
+    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+  >
+    Submit
+  </button>
+</form>
+ : null}
 
             <div className="overflow-x-auto">
               <table className="w-full min-w-[750px] text-left">
@@ -421,10 +388,7 @@ const Home = () => {
                     {[
                       "Requested On",
                       "Leave Date",
-                      "Type",
-                      "Reason",
                       "Status",
-                      "Action",
                     ].map((header) => (
                       <th
                         key={header}
@@ -437,36 +401,28 @@ const Home = () => {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {leaveData.map((leave) => (
+                  {leaveRequestData.map((leave) => (
                     <tr
-                      key={leave.id}
+                      key={leave?.id}
                       className="transition hover:bg-gray-50 dark:hover:bg-gray-800/40"
                     >
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {leave.requestedOn}
+                        {leave?.date}
                       </td>
 
                       <td className="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-                        {leave.leaveDate}
+                        {leave?.leaveDate}
                       </td>
 
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {leave.type}
-                      </td>
+                    
 
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {leave.reason}
-                      </td>
+                     
 
                       <td className="px-6 py-4">
-                        <StatusBadge status={leave.status} />
+                        <StatusBadge status={leave?.requestStatus} />
                       </td>
 
-                      <td className="px-6 py-4">
-                        <button className="text-sm font-medium text-blue-600 hover:text-blue-700">
-                          View
-                        </button>
-                      </td>
+                      
                     </tr>
                   ))}
                 </tbody>
@@ -478,32 +434,7 @@ const Home = () => {
         {/* Performance */}
         {activeTab === "performance" && (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p className="text-sm text-gray-500">Overall Score</p>
-                <p className="mt-2 text-3xl font-bold text-blue-600">92.25</p>
-                <p className="mt-1 text-xs text-green-600">
-                  +4.5% from last quarter
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p className="text-sm text-gray-500">Attendance</p>
-                <p className="mt-2 text-3xl font-bold text-green-600">95%</p>
-              </div>
-
-              <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p className="text-sm text-gray-500">Productivity</p>
-                <p className="mt-2 text-3xl font-bold text-purple-600">88%</p>
-              </div>
-
-              <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p className="text-sm text-gray-500">Rating</p>
-                <div className="mt-3">
-                  <StatusBadge status="Excellent" />
-                </div>
-              </div>
-            </div>
+           
 
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
               <div className="border-b border-gray-100 p-6 dark:border-gray-800">
@@ -525,7 +456,6 @@ const Home = () => {
                         "Teamwork",
                         "Total Score",
                         "Rating",
-                        "Action",
                       ].map((header) => (
                         <th
                           key={header}
@@ -540,42 +470,40 @@ const Home = () => {
                   <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                     {performanceData.map((performance) => (
                       <tr
-                        key={performance.id}
+                        key={performance?.id}
                         className="transition hover:bg-gray-50 dark:hover:bg-gray-800/40"
                       >
                         <td className="px-6 py-4 text-sm font-semibold text-gray-800 dark:text-gray-200">
-                          {performance.period}
+                          {new Date(performance?.createdAt as string).toLocaleString("en-US",{
+                            month : "long"
+                          })}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {performance.attendance}%
+                          {performance?.attendence}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {performance.quality}%
+                          {performance?.quality}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {performance.productivity}%
+                          {performance?.productivity}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {performance.teamwork}%
+                          {performance?.teamwork}
                         </td>
 
                         <td className="px-6 py-4 text-sm font-bold text-gray-800 dark:text-white">
-                          {performance.totalScore}
+                          {performance?.totalScore}
                         </td>
 
                         <td className="px-6 py-4">
-                          <StatusBadge status={performance.rating} />
+                          <StatusBadge status={performance?.rating} />
                         </td>
 
-                        <td className="px-6 py-4">
-                          <button className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300">
-                            Edit
-                          </button>
-                        </td>
+                        
                       </tr>
                     ))}
                   </tbody>
@@ -588,28 +516,7 @@ const Home = () => {
         {/* Payroll */}
         {activeTab === "payroll" && (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p className="text-sm text-gray-500">Current Basic Salary</p>
-                <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-                  NPR 85,000
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p className="text-sm text-gray-500">Current Allowance</p>
-                <p className="mt-2 text-2xl font-bold text-green-600">
-                  NPR 10,000
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <p className="text-sm text-gray-500">Current Net Pay</p>
-                <p className="mt-2 text-2xl font-bold text-blue-600">
-                  NPR 103,500
-                </p>
-              </div>
-            </div>
+            
 
             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
               <div className="border-b border-gray-100 p-6 dark:border-gray-800">
@@ -631,7 +538,7 @@ const Home = () => {
                         "Bonus",
                         "Deduction",
                         "Net Pay",
-                        "Action",
+                        
                       ].map((header) => (
                         <th
                           key={header}
@@ -644,44 +551,42 @@ const Home = () => {
                   </thead>
 
                   <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {payrollData.map((payroll) => (
+                    {payrollData?.map((payroll) => (
                       <tr
-                        key={payroll.id}
+                        key={payroll?.id}
                         className="transition hover:bg-gray-50 dark:hover:bg-gray-800/40"
                       >
                         <td className="px-6 py-4 text-sm font-semibold text-gray-800 dark:text-gray-200">
-                          {payroll.month}
+                          {new Date(payroll?.createdAt as string).toLocaleString("en-US",{
+                            month : "long"
+                          })}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {currency(payroll.basicSalary)}
+                          {currency(payroll?.basicSalary)}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {currency(payroll.allowance)}
+                          {currency(payroll?.allowance)}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-gray-500">
-                          {currency(payroll.overtimePay)}
+                          {currency(payroll?.overtimePay)}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-green-600">
-                          {currency(payroll.bonus)}
+                          {currency(payroll?.bonus)}
                         </td>
 
                         <td className="px-6 py-4 text-sm text-red-500">
-                          -{currency(payroll.deduction)}
+                          -{currency(payroll?.deducation)}
                         </td>
 
                         <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">
-                          {currency(payroll.netPay)}
+                          {currency(payroll?.netPay)}
                         </td>
 
-                        <td className="px-6 py-4">
-                          <button className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50">
-                            Delete
-                          </button>
-                        </td>
+                        
                       </tr>
                     ))}
                   </tbody>

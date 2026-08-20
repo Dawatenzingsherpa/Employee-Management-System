@@ -10,7 +10,7 @@ router.route("/")
 .get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),PerformanceController.fetchPerformance)
 
 router.route("/:id")
-.get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),PerformanceController.fetchSinlgePerformance)
+.get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin,Role.Employee),PerformanceController.fetchSinlgePerformance)
 .patch(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),PerformanceController.updatePerformance)
 .delete(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Admin),PerformanceController.deletePerformance)
 

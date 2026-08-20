@@ -28,7 +28,9 @@ router
     AuthMiddleware.authentication,
     AuthMiddleware.restrictTo(Role.Admin, Role.Admin),
     LeaveRequestController.deleteLeaveRequest,
-  );
+  )
+  .get(AuthMiddleware.authentication,AuthMiddleware.restrictTo(Role.Employee),LeaveRequestController.fetchSingleLeaveRequest);
+
 
 router
   .route("/requestStatus/:id")

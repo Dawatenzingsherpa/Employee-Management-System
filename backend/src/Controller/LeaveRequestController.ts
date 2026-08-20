@@ -5,9 +5,10 @@ import Employee from "../Database/models/Employee";
 class LeaveRequestController {
   async createLeaveRequest(req: Request, res: Response): Promise<void> {
     const { leaveDate, employeeId } = req.body;
+    console.log(leaveDate,employeeId)
 
     if (!leaveDate || !employeeId) {
-      res.status(200).json({
+      res.status(400).json({
         message: "please provide leaveDate and employeeId",
       });
       return;
@@ -133,6 +134,28 @@ class LeaveRequestController {
       data,
     });
   }
+
+    async fetchSingleLeaveRequest(req: Request, res: Response): Promise<void> {
+      const {id} = req.params;
+    const data = await LeaveRequest.findAll({
+      where : {
+        employeeId : id
+      },
+      
+    });
+    if (data.length === 0) {
+      res.status(404).json({
+        message: "no leave request with that id ",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "leave Request fetch successfully",
+      data,
+    });
+  }
+
 }
 
 export default new LeaveRequestController();

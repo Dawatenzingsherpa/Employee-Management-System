@@ -73,7 +73,7 @@ class PayrollController {
 
   async fetchSinglePayroll(req: Request, res: Response): Promise<void> {
     const {id} = req.params
-    const data = await Payroll.findOne({
+    const data = await Payroll.findAll({
       where : {
         employeeId : id
       }

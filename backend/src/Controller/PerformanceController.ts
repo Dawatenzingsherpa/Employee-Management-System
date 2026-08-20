@@ -71,7 +71,11 @@ class PerformanceController {
 
   async fetchSinlgePerformance(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
-    const data = await Performance.findByPk(id as string);
+    const data = await Performance.findAll({
+      where : {
+        employeeId : id
+      }
+    });
     if (!data) {
       res.status(404).json({
         message: "no data with that id",
