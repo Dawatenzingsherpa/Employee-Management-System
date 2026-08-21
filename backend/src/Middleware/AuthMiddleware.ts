@@ -28,7 +28,6 @@ class AuthMiddleware {
       });
       return;
     }
-    console.log(token);
 
     jwt.verify(
       token,

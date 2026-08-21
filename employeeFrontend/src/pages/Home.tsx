@@ -90,7 +90,6 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { token } = useAppSelector((state) => state.auth);
-  console.log(token);
   const {
     employee,
     attendenceData,
@@ -101,7 +100,6 @@ const Home = () => {
 
   useEffect(() => {
     if (!token) return;
-    console.log("tokne useeffect", token);
     dispatch(fetchSingleEmployee());
   }, [token]);
 
@@ -129,7 +127,6 @@ const Home = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("SUBMITTED");
     dispatch(addLeaveRequest(formData));
   };
 
