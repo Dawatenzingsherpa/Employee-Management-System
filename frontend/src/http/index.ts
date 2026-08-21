@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const API = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "https://employee-management-system-kwag.onrender.com/",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json ",
@@ -10,7 +10,7 @@ const API = axios.create({
 });
 
 export const APIAuthenticated = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "https://employee-management-system-kwag.onrender.com/",
 
   headers: {
     "Content-Type": "application/json",

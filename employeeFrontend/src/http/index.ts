@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://employee-management-system-kwag.onrender.com/",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -9,7 +9,7 @@ const API = axios.create({
 });
 
 export const APIAuthenticated = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://employee-management-system-kwag.onrender.com/",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
