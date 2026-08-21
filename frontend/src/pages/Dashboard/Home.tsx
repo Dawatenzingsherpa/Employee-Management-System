@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useEffect } from "react";
 import { fetchAttendenceData } from "../../store/AttendenceSlice";
@@ -8,6 +8,12 @@ import { fetchLeaveRequestData } from "../../store/LeaveRequestSlice";
 import { fetchPayrollData } from "../../store/PayrollSlice";
 
 export default function Home() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token == null || token === undefined) navigate("/signin");
+  }, []);
+
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchAttendenceData());
