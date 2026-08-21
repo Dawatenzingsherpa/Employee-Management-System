@@ -9,7 +9,10 @@ const PORT: number = 3000;
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+      "https://employee-management-system-umber-nine.vercel.app",
+      "https://employee-frontend-eight-livid.vercel.app",
+    ],
   }),
 );
 
