@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { EmployeeData } from "../types/employeeTypes";
 import Department from "../Database/models/Department";
 import { AuthRequest } from "../Middleware/AuthMiddleware";
+import redisClient from "../config/redis";
 class EmployeeController {
   public static async addEmployee(req: Request, res: Response): Promise<void> {
     try {
@@ -42,6 +43,12 @@ class EmployeeController {
         departmentId,
       });
 
+      try {
+        await redisClient.del("employee:all");
+      } catch (error) {
+        console.log(`redis error cache`, error);
+      }
+
       res.status(201).json({
         message: "Employee Added Successfully",
         data,
@@ -58,6 +65,21 @@ class EmployeeController {
     req: Request,
     res: Response,
   ): Promise<void> {
+    const cacheKey = "employee:all";
+    try {
+      const cachedData = await redisClient.get(cacheKey);
+      if (cachedData) {
+        console.log(JSON.parse(cachedData));
+        res.status(200).json({
+          message: "Data Fetched succesfully",
+          data: JSON.parse(cachedData),
+        });
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     const data = await Employee.findAll({
       include: {
         model: Department,
@@ -70,6 +92,12 @@ class EmployeeController {
         message: "No employee Data",
       });
       return;
+    }
+
+    try {
+      await redisClient.setEx(cacheKey, 24 * 60 * 60, JSON.stringify(data));
+    } catch (error) {
+      console.log(`redis cache error`, error);
     }
 
     res.status(200).json({
@@ -110,11 +138,11 @@ class EmployeeController {
     req: AuthRequest,
     res: Response,
   ): Promise<void> {
-    const userId = req?.user?.id
-    console.log(userId)
+    const userId = req?.user?.id;
+    console.log(userId);
     const [data] = await Employee.findAll({
       where: {
-        user_id : userId
+        user_id: userId,
       },
       include: {
         model: Department,

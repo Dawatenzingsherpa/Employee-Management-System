@@ -3,6 +3,7 @@ dotenv.config();
 import cors from "cors";
 
 import express, { Application, Response, Request } from "express";
+import redisClient, { connectRedis } from "./config/redis";
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -41,7 +42,8 @@ app.use("/user", userRoute);
 app.use("/performance", performanceRoute);
 app.use("/payroll", payrollRoute);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await connectRedis();
   DepartmentController.departmentSeeder();
   console.log("server has started at", PORT);
 });
