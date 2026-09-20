@@ -16,6 +16,16 @@ Backend
 
 https://employee-management-system-kwag.onrender.com/
 
+use 
+p2admin@gmail.com 
+p2password 
+for admin login 
+
+and 
+hariShrestha@gmail.com
+harishrestha 
+for employee login
+
 How to Run
 
 Important: Run the backend first, then run the frontend.
