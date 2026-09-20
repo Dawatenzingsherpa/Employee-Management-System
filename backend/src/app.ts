@@ -4,6 +4,7 @@ import cors from "cors";
 
 import express, { Application, Response, Request } from "express";
 import redisClient, { connectRedis } from "./config/redis";
+import limiter from "./Middleware/RateLimiter";
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -18,6 +19,8 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use(limiter);
 
 import "./Database/connection";
 import DepartmentController from "./Controller/DepartmentController";
